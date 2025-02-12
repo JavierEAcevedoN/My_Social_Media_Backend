@@ -11,7 +11,6 @@ import c3.msmb.exceptions.user.PatchUserException;
 import c3.msmb.exceptions.user.SaveUserException;
 import c3.msmb.model.User;
 import c3.msmb.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service

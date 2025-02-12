@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import c3.msmb.exceptions.follow.FollowUserException;
+import c3.msmb.exceptions.follow.GetFollowersException;
+import c3.msmb.exceptions.follow.GetFollowingException;
+import c3.msmb.exceptions.follow.GetFollowsException;
+import c3.msmb.exceptions.follow.UnFollowUserException;
 import c3.msmb.model.Follow;
 import c3.msmb.model.User;
 import c3.msmb.repository.FollowRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -23,18 +27,18 @@ public class FollowService {
     @Transactional
     public void followUser(String followFrom, String followTo) {
         if (followFrom.endsWith(followTo)) {
-            throw new RuntimeException("You can't follow your self");
+            throw new FollowUserException("You can't follow yourself");
         }
         try {
             int inserted = followRepository.follow(followFrom, followTo);
             if (inserted == 0) {
-                throw new EntityNotFoundException("Can't to follow " + followTo);
+                throw new FollowUserException("Can't to follow " + followTo);
             }
             User userFollowFrom = userService.getUserByUsername(followFrom);
             User userFollowTo = userService.getUserByUsername(followTo);
             notificationService.saveNotification(userFollowFrom.getFullName() + " ha comenzado a seguirte.", userFollowTo);
         } catch (Exception e) {
-            throw new RuntimeException("Error to follow " + followTo + ": " + e.getMessage());
+            throw new FollowUserException("Error to follow " + followTo + ": " + e.getMessage());
         }
     }
 
@@ -42,19 +46,33 @@ public class FollowService {
     public void unFollowUser(String followFrom, String followTo) {
         int deleted = followRepository.unFollow(followFrom, followTo);
         if (deleted == 0) {
-            throw new EntityNotFoundException("Doesn't exist a match with " + followFrom + " and " + followTo);
+            throw new UnFollowUserException("Doesn't exist a match with " + followFrom + " and " + followTo);
         }
     }
 
     public List<Follow> getFollowers(String followToUser) {
-        return followRepository.findByFollowToUsername(followToUser);
+        try {
+            List<Follow> follows = followRepository.findByFollowToUsername(followToUser);
+            return follows;
+        } catch (Exception e) {
+            throw new GetFollowersException("Username " + followToUser + " not found");
+        }
     }
 
     public List<Follow> getFollowing(String followFromUser) {
-        return followRepository.findByFollowFromUsername(followFromUser);
+        try {
+            List<Follow> follows = followRepository.findByFollowFromUsername(followFromUser);
+            return follows;
+        } catch (Exception e) {
+            throw new GetFollowingException("Username " + followFromUser + " not found");
+        }
     }
 
     public List<Follow> getFollows() {
-        return followRepository.findAll();
+        List<Follow> follows = followRepository.findAll();
+        if (follows.isEmpty()) {
+            throw new GetFollowsException("Follows not found");
+        }
+        return follows;
     }
 }
