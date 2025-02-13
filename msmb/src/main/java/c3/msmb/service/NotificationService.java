@@ -38,7 +38,7 @@ public class NotificationService {
     public List<Notification> getNotificationsByUsernameAndReaded (String username, Boolean readed) {
         List<Notification> notifications = notificationRepository.findByUsernameUsernameAndReaded(username, readed);
         if (notifications.isEmpty()) {
-            throw new ByUsernameAndReadedException("Notifications not found for user " + username);
+            throw new ByUsernameAndReadedException("Notifications not found readed " + readed +  " for user " + username);
         }
         return notifications;
     }

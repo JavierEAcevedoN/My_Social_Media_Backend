@@ -53,7 +53,7 @@ public class FollowService {
     public List<Follow> getFollowers(String followToUser) {
         List<Follow> follows = followRepository.findByFollowToUsername(followToUser);
         if (follows.isEmpty()) {
-            throw new GetFollowersException("Username " + followToUser + " not found");
+            throw new GetFollowersException("Username " + followToUser + " not found or not have followers");
         }
         return follows;
     }
@@ -61,7 +61,7 @@ public class FollowService {
     public List<Follow> getFollowing(String followFromUser) {
         List<Follow> follows = followRepository.findByFollowFromUsername(followFromUser);
         if (follows.isEmpty()) {
-            throw new GetFollowingException("Username " + followFromUser + " not found");
+            throw new GetFollowingException("Username " + followFromUser + " not found or not are following");
         }
         return follows;
     }
