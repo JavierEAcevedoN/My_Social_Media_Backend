@@ -51,21 +51,19 @@ public class FollowService {
     }
 
     public List<Follow> getFollowers(String followToUser) {
-        try {
-            List<Follow> follows = followRepository.findByFollowToUsername(followToUser);
-            return follows;
-        } catch (Exception e) {
+        List<Follow> follows = followRepository.findByFollowToUsername(followToUser);
+        if (follows.isEmpty()) {
             throw new GetFollowersException("Username " + followToUser + " not found");
         }
+        return follows;
     }
 
     public List<Follow> getFollowing(String followFromUser) {
-        try {
-            List<Follow> follows = followRepository.findByFollowFromUsername(followFromUser);
-            return follows;
-        } catch (Exception e) {
+        List<Follow> follows = followRepository.findByFollowFromUsername(followFromUser);
+        if (follows.isEmpty()) {
             throw new GetFollowingException("Username " + followFromUser + " not found");
         }
+        return follows;
     }
 
     public List<Follow> getFollows() {

@@ -28,16 +28,16 @@ public class FollowExceptionsHandler {
     public ResponseEntity<Map<String, Object>> followersNotFound(GetFollowersException exc) {
         Map<String, Object> error = new HashMap<>();
         error.put("error", exc.getMessage());
-        error.put("status", HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        error.put("status", HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(GetFollowingException.class)
     public ResponseEntity<Map<String, Object>> followingNotFound(GetFollowingException exc) {
         Map<String, Object> error = new HashMap<>();
         error.put("error", exc.getMessage());
-        error.put("status", HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        error.put("status", HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(FollowUserException.class)
