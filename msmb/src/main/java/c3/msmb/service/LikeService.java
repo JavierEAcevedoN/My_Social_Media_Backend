@@ -5,10 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import c3.msmb.exceptions.like.ByPublicationId;
+import c3.msmb.exceptions.like.GetLikesException;
+import c3.msmb.exceptions.like.LikePublicationException;
+import c3.msmb.exceptions.like.UnLikePublicationException;
 import c3.msmb.model.Like;
 import c3.msmb.model.User;
 import c3.msmb.repository.LikeRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -24,11 +27,19 @@ public class LikeService {
 
 
     public List<Like> getLikes() {
-        return likeRepository.findAll();
+        List<Like> likes = likeRepository.findAll();
+        if (likes.isEmpty()) {
+            throw new GetLikesException("Likes not found");
+        }
+        return likes;
     }
 
     public List<Like> getLikesByPublicationId(Long publicationId) {
-        return likeRepository.findByIdPublicationId(publicationId);
+        List<Like> likes = likeRepository.findByIdPublicationId(publicationId);
+        if (likes.isEmpty()) {
+            throw new ByPublicationId("Likes not found for publication " + publicationId);
+        }
+        return likes;
     }
 
     public Boolean isLiked(String username, Long idPublication) {
@@ -40,7 +51,7 @@ public class LikeService {
         try {
             int inserted = likeRepository.like(username, idPublication);
             if (inserted == 0) {
-                throw new EntityNotFoundException("Can't to like " + idPublication);
+                throw new LikePublicationException("Can't to like " + idPublication);
             }
             User userLike = userService.getUserByUsername(username);
             User userLiked = publicationService.getPublicationById(idPublication).getUsername();
@@ -48,7 +59,7 @@ public class LikeService {
                 notificationService.saveNotification(userLike.getFullName() + " ha reaccionado a tu publicacion", userLiked);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error to like " + idPublication + ": " + e.getMessage());
+            throw new LikePublicationException("Error to like publication " + idPublication + ": " + e.getMessage());
         }
     }
 
@@ -56,7 +67,7 @@ public class LikeService {
     public void unLikePublication(String username, Long idPublication) {
         int deleted = likeRepository.unlike(username, idPublication);
         if (deleted == 0) {
-            throw new EntityNotFoundException("Doesn't exist a match with " + username + " and " + idPublication);
+            throw new UnLikePublicationException("Doesn't exist a match with " + username + " and publication " + idPublication);
         }
     }
 }
