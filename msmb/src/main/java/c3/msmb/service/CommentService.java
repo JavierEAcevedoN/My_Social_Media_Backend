@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import c3.msmb.exceptions.comment.GetCommentsByPublicationIdException;
+import c3.msmb.exceptions.comment.GetCommentsException;
+import c3.msmb.exceptions.comment.SaveCommentException;
 import c3.msmb.model.Comment;
 import c3.msmb.model.User;
 import c3.msmb.repository.CommentRepository;
@@ -21,11 +24,19 @@ public class CommentService {
     private UserService userService;
 
     public List<Comment> getComments() {
-        return commentRepository.findAll();
+        List<Comment> comments = commentRepository.findAll();
+        if (comments.isEmpty()) {
+            throw new GetCommentsException("Comments not found");
+        }
+        return comments;
     }
 
     public List<Comment> getCommentsByPublicationId(Long idPublication) {
-        return commentRepository.findByIdPublicationId(idPublication);
+        List<Comment> comments = commentRepository.findByIdPublicationId(idPublication);
+        if (comments.isEmpty()) {
+            throw new GetCommentsByPublicationIdException("Comments not found for publication: " + idPublication);
+        }
+        return comments;
     }
 
     public Comment saveComment(Comment comment) {
@@ -44,8 +55,7 @@ public class CommentService {
             }
             return newComment;
         } catch (Exception e) {
-            System.out.println("The user or publication doesn't exist");
-            return null;
+            throw new SaveCommentException("The user or publication doesn't exist");
         }
     }
 }
