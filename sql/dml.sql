@@ -1,8 +1,12 @@
 INSERT INTO public."user" (username, email, full_name, password, phone, birth_date, created, updated, biography, profile_photo) VALUES
-('adrsphad', 'adrsphad@email.com', 'Adrian Sephard', 'hashedpassword123', '+1 432 655 6543', '1978-11-19', '2025-02-10', NULL, 'En espera por una mision.', NULL),
-('gfreman', 'gfreman@email.com', 'Gordon Freeman', 'securepassword456', '+1 365 524 1755', '1983-12-24', '2025-02-10', NULL, 'Cientifico y Fisico, investigador de {redacted}.', NULL),
-('barcal', 'barcal@email.com', 'Barney Calhoun', 'pass1234', '+1 301 641 5321', '1970-05-19', '2025-02-10', NULL, 'Guardia de seguridad.', NULL),
-('jean', 'jean@email.com', 'Javier Eduardo Acevedo Noguera', '46hd721awqw', '+57 731 432 4321', '2006-10-19', '2025-02-10', NULL, 'Programador apasionado en Spring Boot y React.', NULL);
+('adrsphad', 'adrsphad@email.com', 'Adrian Sephard', '$2a$10$IIWJU5XEQQ.5aUmWw2vJJ.e8Zjhr6ZrG/edaKKKdXMRhrmEA9/7FG', '+1 432 655 6543', '1978-11-19', '2025-02-10', NULL, 'En espera por una mision.', NULL),
+('gfreman', 'gfreman@email.com', 'Gordon Freeman', '$2a$10$B6J5l1sFCC5SaL7SJj0qie7Ikmo3MIv1gTJZ5tk4JqBPgNp9t3uaK', '+1 365 524 1755', '1983-12-24', '2025-02-10', NULL, 'Cientifico y Fisico, investigador de {redacted}.', NULL),
+('barcal', 'barcal@email.com', 'Barney Calhoun', '$2a$10$PyoOk4XlRRUYj9Pv4hSwpeEPF0Rw0SslEC9wds4wScsMQgGeTfNVS', '+1 301 641 5321', '1970-05-19', '2025-02-10', NULL, 'Guardia de seguridad.', NULL),
+('jean', 'jean@email.com', 'Javier Eduardo Acevedo Noguera', '$2a$10$O4/aiGy9xJSeGqjwbSGJH..yyYJMm9vrFLYW3uV.atCFQ0grM67wK', '+57 731 432 4321', '2006-10-19', '2025-02-10', NULL, 'Programador apasionado en Spring Boot y React.', NULL);
+-- hashedpassword123
+-- securepassword456
+-- pass1234
+-- 46hd721awqw
 
 -- from user to user
 INSERT INTO public.follow (followed, follow_from, follow_to) VALUES

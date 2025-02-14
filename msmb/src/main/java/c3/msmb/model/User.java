@@ -2,6 +2,10 @@ package c3.msmb.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "\"user\"")
-public class User {
+public class User implements UserDetails{
     @Id
     @Column(length = 128, nullable = false)
     private String username;
@@ -139,5 +143,10 @@ public class User {
         return "User [username=" + username + ", email=" + email + ", fullName=" + fullName + ", password=" + password
                 + ", phone=" + phone + ", birthDate=" + birthDate + ", created=" + created + ", updated=" + updated
                 + ", biography=" + biography + ", profilePhoto=" + profilePhoto + "]";
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 }
