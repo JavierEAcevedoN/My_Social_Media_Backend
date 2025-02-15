@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public."user"
     email character varying(256) COLLATE pg_catalog."default" NOT NULL,
     full_name character varying(512) COLLATE pg_catalog."default" NOT NULL,
     password text COLLATE pg_catalog."default" NOT NULL,
-    phone character varying(16) COLLATE pg_catalog."default" NOT NULL,
+    phone character varying(20) COLLATE pg_catalog."default" NOT NULL,
     birth_date date NOT NULL,
     created timestamp without time zone NOT NULL,
     updated timestamp without time zone,

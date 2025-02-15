@@ -3,7 +3,7 @@ CREATE Table "user" (
     email VARCHAR(256) UNIQUE NOT NULL,
     full_name VARCHAR(512) NOT NULL,
     password TEXT NOT NULL,
-	phone VARCHAR(16) NOT NULL,
+	phone VARCHAR(20) NOT NULL,
     birth_date DATE NOT NULL,
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
