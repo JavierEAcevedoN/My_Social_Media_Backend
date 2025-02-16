@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -33,5 +34,10 @@ public class NotificationsController {
     public List<Notification> geNotificationsByUsername(@PathVariable(name = "username") String username,
             @PathVariable(name = "readed") Boolean readed) {
         return notificationService.getNotificationsByUsernameAndReaded(username, readed);
+    }
+
+    @PatchMapping("/{id}")
+    public void markAsRead(@PathVariable(name = "id") Long id) {
+        notificationService.markAsReaded(id);
     }
 }

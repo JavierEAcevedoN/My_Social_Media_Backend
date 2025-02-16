@@ -12,6 +12,7 @@ import c3.msmb.exceptions.notification.ByUsernameAndReadedException;
 import c3.msmb.exceptions.notification.ByUsernameException;
 import c3.msmb.exceptions.notification.GetNotificationsException;
 import c3.msmb.exceptions.notification.SaveNotificationException;
+import c3.msmb.exceptions.notification.MarkAsReadException;
 
 @RestControllerAdvice
 public class NotificationsExceptionsHandler {
@@ -41,6 +42,14 @@ public class NotificationsExceptionsHandler {
 
     @ExceptionHandler(SaveNotificationException.class)
     public ResponseEntity<Map<String, Object>> saveNotificationByUsername(SaveNotificationException exc) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", exc.getMessage());
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MarkAsReadException.class)
+    public ResponseEntity<Map<String, Object>> markAsReadException(MarkAsReadException exc) {
         Map<String, Object> error = new HashMap<>();
         error.put("error", exc.getMessage());
         error.put("status", HttpStatus.BAD_REQUEST.value());
