@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 @RestController
 @RequestMapping("api/follows")
 public class FollowController {
@@ -33,6 +34,12 @@ public class FollowController {
     @GetMapping("/following/{username}")
     public List<Follow> getFollowing(@PathVariable(name = "username") String username) {
         return followService.getFollowing(username);
+    }
+
+    @GetMapping("/{followfrom}/{followto}")
+    public Boolean isFollow(@PathVariable(name = "followfrom") String followFrom,
+            @PathVariable(name = "followto") String followTo) {
+                return followService.isFollow(followFrom, followTo);
     }
 
     @PostMapping("/{followfrom}/{followto}")

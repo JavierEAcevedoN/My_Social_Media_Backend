@@ -26,8 +26,8 @@ public class CommentExceptionsHandler {
     public ResponseEntity<Map<String, Object>> getCommentsByPublicationIdException(GetCommentsByPublicationIdException exc) {
         Map<String, Object> error = new HashMap<>();
         error.put("error", exc.getMessage());
-        error.put("status", HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        error.put("status", HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity<>(error, HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(SaveCommentException.class)

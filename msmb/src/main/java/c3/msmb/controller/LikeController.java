@@ -15,7 +15,7 @@ import c3.msmb.service.LikeService;
 
 @RestController
 @RequestMapping("/api/likes")
-public class MyController {
+public class LikeController {
     @Autowired
     private LikeService likeService;
 

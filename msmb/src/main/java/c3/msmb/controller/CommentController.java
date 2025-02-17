@@ -30,7 +30,7 @@ public class CommentController {
         return commentService.getCommentsByPublicationId(idPublication);
     }
     
-    @PostMapping("/save")
+    @PostMapping
     public Comment saveComment(@RequestBody Comment comment) {
         return commentService.saveComment(comment);
     }

@@ -50,6 +50,10 @@ public class FollowService {
         }
     }
 
+    public Boolean isFollow(String followFrom, String followTo) {
+        return followRepository.existsByFollowFromUsernameAndFollowToUsername(followFrom, followTo);
+    }
+
     public List<Follow> getFollowers(String followToUser) {
         List<Follow> follows = followRepository.findByFollowToUsername(followToUser);
         if (follows.isEmpty()) {

@@ -33,7 +33,7 @@ public class PublicationsController {
         return publicationService.getPublicationsByUsername(username);
     }
     
-    @PostMapping("/save")
+    @PostMapping
     public Publication savePublication(@RequestBody Publication publication) {
         return publicationService.savePublication(publication);
     }

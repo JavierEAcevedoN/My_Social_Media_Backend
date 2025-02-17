@@ -31,13 +31,13 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
     
-    @PostMapping("/save")
+    @PostMapping
     public User saveUser(@RequestBody User user) {
         userService.saveUser(user);
         return user;
     }
     
-    @PatchMapping("/patch/{username}")
+    @PatchMapping("/{username}")
     public void pachUser(@PathVariable(name = "username") String username, @RequestBody User user) {
         userService.updateInfoUser(username, user);
     }

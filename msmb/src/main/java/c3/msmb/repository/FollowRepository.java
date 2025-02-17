@@ -14,6 +14,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long>{
     List<Follow> findByFollowFromUsername(String followFrom);
     List<Follow> findByFollowToUsername(String followTo);
 
+    boolean existsByFollowFromUsernameAndFollowToUsername (String followFrom, String followTo);
+
     @Modifying
     @Transactional
     @Query("INSERT INTO Follow (followFrom, followTo, followed) VALUES " +
