@@ -1,0 +1,1048 @@
+openapi: 3.0.1
+info:
+  title: Half Media
+  description: Una API de consulta de datos de una red social.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local
+    
+tags:
+- name: Auth
+  description: Endpoint para el inicio de sesion y registro del usuario.
+- name: Users
+  description: Endpoint en donde se maneja la informacion de los usuarios.
+- name: Publications
+  description: Endpoint en donde se maneja la informacion de las publicaciones.
+- name: Notifications
+  description: Endpoint en donde se maneja la informacion de las notificaciones.
+- name: Likes
+  description: Endpoint en donde se maneja la informacion de los likes.
+- name: Follows
+  description: Endpoint en donde se maneja la informacion de los follows.
+- name: Comment
+  description: Endpoint en donde se maneja la informacion de los comentarios.
+  
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  responses:
+    NotToken:
+      description: (Forbidden) No autorizado. El token JWT es requerido.
+
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "jaen"
+        email:
+          type: string
+          format: email
+          example: "jaen@email.com"
+        fullName:
+          type: string
+          example: "Javier Eduardo Acevedo Noguera"
+        password:
+          type: string
+          format: password
+          example: "es343DSA%%"
+        phone:
+          type: string
+          example: "+43 546 242 6742"
+        birthDate:
+          type: string
+          format: date
+          example: "2010-02-05"
+        created:
+          type: string
+          format: date-time
+          example: "2025-02-13T17:30:00"
+
+    Publication:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        content:
+          type: string
+          example: "Hola mundo"
+        created:
+          type: string
+          format: date-time
+          example: "2025-02-15T23:43:00"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["#Hello", "#World"]
+        username:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "jean (+ los otros datos del usuario referenciado)"
+        imgSrc:
+          type: string
+          example: "img.png"
+          
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        content:
+          type: string
+          example: "Adrian Sephard ha comenzado a seguirte."
+        sended:
+          type: string
+          format: date-time
+          example: "2025-02-10T21:43:00"
+        readed:
+          type: boolean
+          example: false
+        username:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "jean (+ los otros datos del usuario referenciado)"
+
+    Like:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+        liked:
+          type: string
+          format: date
+          example: "2025-02-17"
+        username:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "barcal"
+        idPublication:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 4
+            contenido:
+              type: string
+              example: "+ todos los datos de la publicacion referenciada"
+              
+    Follow:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        followed:
+          type: string
+          format: date-time
+          example: "2025-02-10T21:38:00"
+        followFrom:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "barcal (+ los datos del usuario referenciado)"
+        followTo:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "gfreman (+ los datos del usuario referenciado)"
+              
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        content:
+          type: string
+          example: "No paso nada en las instalaciones todo esta bajo control :)"
+        created:
+          type: string
+          format: date-time
+          example: "2025-02-10T20:42:00"
+        updated:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        tagged:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "barcal"
+          nullable: true
+        idPublication:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 3
+        username:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "gfreman"
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      description: Permite a un usuario autenticarse con su nombre de usuario y contraseña. Devuelve un token JWT si las credenciales son correctas.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "jean"
+                password:
+                  type: string
+                  format: password
+                  example: "46hd721awqw"
+      responses:
+        "200":
+          description: (Ok) Inicio de sesión exitoso. Devuelve el token de autenticación.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1..."
+        "403":
+          description: (Forbidden) Credenciales incorrectas.
+
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registrar usuario
+      description: Permite crear un nuevo usuario con la información requerida. Devuelve un token JWT si el registro es exitoso.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: (Ok) Usuario registrado exitosamente. Devuelve el token de autenticación.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1..."
+        "400":
+          description: (Bad Request) Error en la solicitud (usuario ya existente o datos inválidos).
+  
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: Obtener todos los usuarios
+      description: Devuelve una lista con todos los usuarios registrados. **Requiere autenticación JWT**.
+      operationId: getUsers
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de usuarios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "403":
+          $ref: "#/components/responses/NotToken"
+  
+    post:
+      tags:
+        - Users
+      summary: Registrar un nuevo usuario
+      description: Crea un nuevo usuario. **Requiere autenticación JWT**.
+      operationId: saveUser
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: (Ok) Usuario creado exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+
+  /api/users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Obtener un usuario por username
+      description: Devuelve la información de un usuario específico. **Requiere autenticación JWT**.
+      operationId: getUserByUsername
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      responses:
+        "200":
+          description: Información del usuario obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: User not Found. {username}
+
+    patch:
+      tags:
+        - Users
+      summary: Actualizar información de un usuario
+      description: Permite modificar los datos de un usuario existente.
+        Se le puede pasar uno o varios datos de los siguientes,
+        si se le pasan mas datos de los necesarios no los utiliza.
+      operationId: updateUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  example: "Javier Eduardo Acevedo Noguera"
+                phone:
+                  type: string
+                  example: "+43 546 242 6742"
+                birthDate:
+                  type: string
+                  format: date
+                  example: "2010-02-05"
+                biography:
+                  type: string
+                  example: "Programador"
+      responses:
+        "200":
+          description: (Ok) Usuario actualizado exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+
+  /api/publications:
+    get:
+      tags:
+        - Publications
+      summary: Obtener todas las publicaciones
+      description: Devuelve una lista con todas las publicaciones disponibles, En la parte de username devuelve todos los datos del user referenciado.
+      operationId: getPublications
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de publicaciones obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Publication"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No Content) Publications Not found.
+    
+    post:
+      tags:
+        - Publications
+      summary: Crear una nueva publicación
+      description: Permite crear una nueva publicación con los detalles proporcionados.
+      operationId: savePublication
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Primera publicacion"
+                created:
+                  type: string
+                  format: date-time
+                  example: "2025-02-15T23:43:00"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["#First", "#Publication"]
+                username:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                      example: "jean"
+      responses:
+        "200":
+          description: (Ok) Publicación creada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publication"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad Request) Username {username} not Exist.
+  
+  /api/publications/{username}:
+    get:
+      tags:
+        - Publications
+      summary: Obtener publicaciones de un usuario
+      description: Devuelve las publicaciones realizadas por un usuario específico, En la parte de username devuelve todos los datos del user referenciado.
+      operationId: getPublicationsByUsername
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      responses:
+        "200":
+          description: (Ok) Publicaciones obtenidas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Publication"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not Found) Publications not found for user {username}.
+
+  /api/publications/{id}:
+    delete:
+      tags:
+        - Publications
+      summary: Eliminar una publicación
+      description: Permite eliminar una publicación por su ID.
+      operationId: deletePublication
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: (Ok) Publicación eliminada exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+
+    patch:
+      tags:
+        - Publications
+      summary: Actualizar información de una publicación
+      description: Permite modificar los datos de una publicación existente, 
+        Se le puede pasar uno o varios datos de los siguientes,
+        si se le pasan mas datos de los necesarios no los utiliza.
+      operationId: patchPublication
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imgSrc:
+                  type: string
+                  example: "img.png"
+                content:
+                  type: string
+                  example: "Contenido de la publicacion"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["#tag1", "#tag2"]
+      responses:
+        "200":
+          description: (Ok) Publicación actualizada exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not Found) Publication not found {id}
+
+  /api/notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Obtener todas las notificaciones
+      description: Devuelve una lista con todas las notificaciones.
+      operationId: getNotifications
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de notificaciones obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not Found) Notifications not found.
+  
+  /api/notifications/{username}:
+    get:
+      tags:
+        - Notifications
+      summary: Obtener notificaciones de un usuario
+      description: Devuelve las notificaciones de un usuario específico.
+      operationId: getNotificationsByUsername
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      responses:
+        "200":
+          description: (Ok) Notificaciones obtenidas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No Content) Notifications not found for user {username}
+  
+  /api/notifications/{username}/{readed}:
+    get:
+      tags:
+        - Notifications
+      summary: Obtener notificaciones de un usuario por estado de lectura
+      description: Devuelve las notificaciones de un usuario específico, filtradas por si están leídas o no.
+      operationId: getNotificationsByUsernameAndReaded
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+        - name: readed
+          in: path
+          required: true
+          schema:
+            type: boolean
+          example: false
+      responses:
+        "200":
+          description: (Ok) Notificaciones obtenidas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not Found) Notifications not found readed true for user {username}.
+
+  /api/notifications/{id}:
+    patch:
+      tags:
+        - Notifications
+      summary: Marcar notificación como leída
+      description: Permite marcar una notificación como leída.
+      operationId: markAsRead
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 3
+      responses:
+        "200":
+          description: (Ok) Notificación marcada como leída.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad request) Publication not found {id}.
+  
+  /api/likes:
+    get:
+      tags:
+        - Likes
+      summary: Obtener todas las interacciones de "Me gusta"
+      description: Devuelve una lista de todas las interacciones de "Me gusta".
+      operationId: getLikes
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de "Me gusta" obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Like"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: Likes not found
+
+  /api/likes/{id}:
+    get:
+      tags:
+        - Likes
+      summary: Obtener "Me gusta" por ID de publicación
+      description: Devuelve todos los "Me gusta" asociados a una publicación específica.
+      operationId: getLikesByPublicationId
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 4
+      responses:
+        "200":
+          description: (Ok) "Me gusta" obtenidos exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Like"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No content) Likes not found for publication {publicationId}
+
+  /api/likes/{username}/{id}:
+    get:
+      tags:
+        - Likes
+      summary: Verificar si un usuario le ha dado "Me gusta" a una publicación
+      description: Devuelve `true` si un usuario específico ha dado "Me gusta" a una publicación.
+      operationId: isLiked
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "barcal"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: (Ok) Respuesta con el estado de "Me gusta" (true/false).
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        "403":
+          $ref: "#/components/responses/NotToken"
+
+    post:
+      tags:
+        - Likes
+      summary: Dar "Me gusta" a una publicación
+      description: Permite que un usuario le dé "Me gusta" a una publicación específica.
+      operationId: likePublication
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: (Ok) Publicación marcada con "Me gusta".
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad request) Error to like publication {idPublication} Can't to like {idPublication}.
+  
+    delete:
+      tags:
+        - Likes
+      summary: Eliminar "Me gusta" de una publicación
+      description: Permite que un usuario elimine su "Me gusta" de una publicación específica.
+      operationId: unLikePublication
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "barcal"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: (Ok) "Me gusta" eliminado exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (No content) Doesn't exist a match with jean and publication 5.
+  
+  /api/follows:
+    get:
+      tags:
+        - Follows
+      summary: Obtener todas las interacciones de seguidores
+      description: Devuelve una lista de todas las interacciones de "seguimientos".
+      operationId: getFollows
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de interacciones de seguidores obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not found) Follows not found.
+
+  /api/follows/followers/{username}:
+    get:
+      tags:
+        - Follows
+      summary: Obtener seguidores de un usuario
+      description: Devuelve una lista de los seguidores de un usuario específico.
+      operationId: getFollowers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      responses:
+        "200":
+          description: (Ok) Lista de seguidores obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No content) Username {username} not found or not have followers.
+
+  /api/follows/following/{username}:
+    get:
+      tags:
+        - Follows
+      summary: Obtener usuarios a los que un usuario está siguiendo
+      description: Devuelve una lista de los usuarios a los que un usuario específico está siguiendo.
+      operationId: getFollowing
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "jean"
+      responses:
+        "200":
+          description: (Ok) Lista de usuarios a los que el usuario está siguiendo obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No content) Username {username} not found or not are following.
+
+  /api/follows/{followfrom}/{followto}:
+    get:
+      tags:
+        - Follows
+      summary: Verificar si un usuario sigue a otro
+      description: Devuelve `true` si el primer usuario sigue al segundo.
+      operationId: isFollow
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: followfrom
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "barcal"
+        - name: followto
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "gfreman"
+      responses:
+        "200":
+          description: (Ok) Respuesta con el estado del seguimiento (true/false).
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        "403":
+          $ref: "#/components/responses/NotToken"
+
+    post:
+      tags:
+        - Follows
+      summary: Seguir a un usuario
+      description: Permite que un usuario siga a otro.
+      operationId: followUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: followfrom
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "barcal"
+        - name: followto
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "gfreman"
+      responses:
+        "200":
+          description: (Ok) Usuario seguido exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad request) You can't follow yourself or Error to follow {followToUsername}.
+
+    delete:
+      tags:
+        - Follows
+      summary: Dejar de seguir a un usuario
+      description: Permite que un usuario deje de seguir a otro.
+      operationId: unFollowUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: followfrom
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "barcal"
+        - name: followto
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "gfreman"
+      responses:
+        "200":
+          description: (Ok) Usuario dejado de seguir exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad request) Doesn't exist a match with {followFromUsername} and {followToUsername}.
+          
+  /api/comments:
+    get:
+      tags:
+        - Comments
+      summary: Obtener todos los comentarios
+      description: Devuelve una lista de todos los comentarios.
+      operationId: getComments
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: (Ok) Lista de comentarios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "404":
+          description: (Not found) Comments not found
+
+    post:
+      tags:
+        - Comments
+      summary: Guardar un nuevo comentario
+      description: Crea un nuevo comentario para una publicación específica.
+      operationId: saveComment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Comment"
+      responses:
+        "200":
+          description: (Ok) Comentario guardado exitosamente.
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "400":
+          description: (Bad request) The user or publication doesn't exist.
+
+  /api/comments/{id}:
+    get:
+      tags:
+        - Comments
+      summary: Obtener comentarios por ID de publicación
+      description: Devuelve los comentarios de una publicación específica.
+      operationId: getCommentsByUsername
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 3
+      responses:
+        "200":
+          description: (Ok) Lista de comentarios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+        "403":
+          $ref: "#/components/responses/NotToken"
+        "204":
+          description: (No content) Comments not found for publication {idPublication}.
