@@ -23,7 +23,7 @@ INSERT INTO public.notification (content, sended, readed, username) VALUES
 
 INSERT INTO public.publication (content, img_src, created, updated, tags, username) VALUES
 ('Mi primer post en la plataforma!', NULL, '2025-02-10 20:30:00', NULL, '{"#Hola","#Welcome"}', 'gfreman'),
-('Una hermosa puesta de sol en la playa. #Vacaciones', NULL, '2025-02-10 20:30:00', NULL, '{"#Descanso","#Vaciones"}', 'barcal'),
+('Una hermosa puesta de sol en la playa.', NULL, '2025-02-10 20:30:00', NULL, '{"#Descanso","#Vaciones"}', 'barcal'),
 ('Estoy en una mision hacia unas instalaciones', NULL, '2025-02-10 20:30:00', NULL, NULL, 'adrsphad'),
 ('Iniciando un nuevo proyecto en Spring Boot y React, es un proyecto sobre una red social :).', NULL, '2025-02-10 20:30:00', NULL, '{"#Programacion","#Java"}', 'jean');
 
