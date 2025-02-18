@@ -188,7 +188,7 @@ O aqui: [Index.html](./html2-client-generated/index.html)
 
 Puedes encontrar el repositorio del frontend aqui:
 - [Repositorio Frontend](https://github.com/JavierEAcevedoN/My_Social_Media_Frontend)  
-Ultimo Hash: ``1d9970ec166f7c751bdc0f4df73cb29f3b3cab08``
+Ultimo Hash: ``f9cb3069ef13184e4c57c962918548c6e47d3ebb``
 
 <h3 id="autor">Autor 👤</h3>
 
