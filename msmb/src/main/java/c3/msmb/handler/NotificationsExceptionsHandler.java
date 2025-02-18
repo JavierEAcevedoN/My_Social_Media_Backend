@@ -25,11 +25,11 @@ public class NotificationsExceptionsHandler {
     }
 
     @ExceptionHandler(ByUsernameException.class)
-    public ResponseEntity<Map<String, Object>> notificationsByUsernameNotFound(ByUsernameException exc) {
+    public ResponseEntity<Map<String, Object>> notificationsByUsernameNotContent(ByUsernameException exc) {
         Map<String, Object> error = new HashMap<>();
         error.put("error", exc.getMessage());
-        error.put("status", HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        error.put("status", HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity<>(error, HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(ByUsernameAndReadedException.class)
